@@ -1,0 +1,62 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar.mat-primary {
+  background-color: rgba(240, 209, 115);
+  background-image: url('../../../assets/img/toolbar_plants.png');
+  height: 20vh;
+  display: flex;
+  align-items: self-end;
+  justify-content: center;
+  color: #302b2b;
+}
+
+.content-main {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+
+}
+
+a {
+
+  text-decoration-line: none;
+  justify-content: flex-start;
+
+  background-color: rgb(84, 108, 157);
+  color: white;
+
+  border-right-width: 0px;
+  border-right-style: solid;
+  border-top-width: 0px;
+  border-top-style: solid;
+  border-left-width: 0px;
+  border-left-style: solid;
+  border-bottom-width: 0px;
+  border-bottom-style: solid;
+  padding-top: 4px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 4px;
+
+  transition: background-color 75ms ease-out;
+
+  // change overflowing text to ellipsis
+  .text-container {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    //background-color: rgb(138, 110, 28);
+  }
+
+  font-size: 1.0em;
+
+  width: fit-content;
+  height: fit-content;
+}
