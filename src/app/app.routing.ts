@@ -7,6 +7,7 @@ import { MisCitasComponent } from './screens/mis-citas/mis-citas.component';
 import { NuevaCitaComponent } from './screens/nueva-cita/nueva-cita.component';
 import { EmergenciaComponent } from './screens/emergencia/emergencia.component';
 import { SettingsComponent } from './screens/settings/settings.component';
+import { EspecialidadComponent } from './screens/especialidad/especialidad.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path: 'mis-citas',
     component: MisCitasComponent,
+  },
+  {
+    path: 'especialidad',
+    component: EspecialidadComponent,
   },
   // redirect to `home` if there is no path
   {

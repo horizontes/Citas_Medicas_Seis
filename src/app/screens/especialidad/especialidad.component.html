@@ -1,0 +1,47 @@
+<p>
+
+  <mat-toolbar color="primary">
+    <mat-toolbar-row style="align-items: self-end;">
+      <h2>Hola Aurora,<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</p>
+<mat-toolbar style="background-color: white;">
+  <mat-toolbar-row>
+    <h4>Selecciona una Especialidad: <br></h4>
+  </mat-toolbar-row>
+  <mat-toolbar-row style="background-color: white;">
+    <mat-form-field class="example-full-width" style="width: 50%;">
+      <mat-label>Especialidad</mat-label>
+      <input type="text"
+             placeholder="Selecciona una"
+             aria-label="Number"
+             matInput
+             [formControl]="myControl"
+             [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-toolbar-row>
+  <mat-toolbar-row style="height: 10%;">
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="content content-main" style="display: block;">
+  
+    <div>
+        <table >
+          <tr *ngFor='let options of optionsFiltered; index as i'>
+            <td *ngFor='let option of options; index as i'>
+              <mat-card>
+                <mat-card-content>{{option}}</mat-card-content>
+              </mat-card>
+            </td>
+          </tr>
+      </table>
+  </div>   
+</div>
+
+<router-outlet></router-outlet>
