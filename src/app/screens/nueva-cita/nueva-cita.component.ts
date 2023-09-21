@@ -1,6 +1,8 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './nueva-cita.component.html',
@@ -8,8 +10,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class NuevaCitaComponent {
 
+  location: Location;
+
   constructor(private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer){
+    private domSanitizer: DomSanitizer, location: Location){
+
+      this.location = location;
 
       this.matIconRegistry.addSvgIcon(
         'calendar_add_on',
@@ -26,6 +32,11 @@ export class NuevaCitaComponent {
         this.domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/svg/serv-med.svg')
       );
 
+  }
+
+  irAEspecialidad(){
+    this.location.go('/especialidad');
+    this.location.forward();
   }
 
 }

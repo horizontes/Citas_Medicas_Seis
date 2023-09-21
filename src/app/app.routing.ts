@@ -8,6 +8,8 @@ import { NuevaCitaComponent } from './screens/nueva-cita/nueva-cita.component';
 import { EmergenciaComponent } from './screens/emergencia/emergencia.component';
 import { SettingsComponent } from './screens/settings/settings.component';
 import { EspecialidadComponent } from './screens/especialidad/especialidad.component';
+import { MedicosEspecialidadComponent } from './screens/medico/medicos-especialidad.component';
+import { CrearCitaComponent } from './screens/cita/crear-cita.component';
 
 const routes: Routes = [
   {
@@ -33,6 +35,14 @@ const routes: Routes = [
   {
     path: 'especialidad',
     component: EspecialidadComponent,
+  },
+  {
+    path: 'medicosEspecialidad',
+    component: MedicosEspecialidadComponent,
+  },
+  {
+    path: 'crear-cita',
+    component: CrearCitaComponent,
   },
   // redirect to `home` if there is no path
   {

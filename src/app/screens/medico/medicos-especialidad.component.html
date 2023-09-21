@@ -8,13 +8,14 @@
 </p>
 <mat-toolbar style="background-color: white;">
   <mat-toolbar-row>
-    <h4>Selecciona una Especialidad, o puedes volver a <a routerLink="/nueva-cita">Nueva Cita</a><br></h4>
+    <h4>Estos son los medicos de la Especialidad: <span style="text-decoration: underline;">{{especialidadSelected.name}}</span>
+      o puedes volver a selecionar otra <a routerLink="/especialidad">Especialidad</a></h4>
   </mat-toolbar-row>
   <mat-toolbar-row style="background-color: white;">
     <mat-form-field class="example-full-width" style="width: 50%;">
-      <mat-label>Especialidad</mat-label>
+      <mat-label>Medicos de {{especialidadSelected.name}}</mat-label>
       <input type="text"
-             placeholder="Selecciona una"
+             placeholder="Selecciona uno"
              aria-label="Number"
              matInput
              [formControl]="myControl"
@@ -35,10 +36,10 @@
         <table >
           <tr *ngFor="let options of optionsFiltered; index as i">
             <td *ngFor="let option of options; index as i">
-              <mat-card matRipple routerLink="/crear-cita" [queryParams]="{especialidadId: option.id}"
-              queryParamsHandling="merge" style="border: 2px solid rgb(91, 176, 209);">
+              <mat-card matRipple routerLink="/crearCita" [queryParams]="{medicoId: option.medicoId}"
+              queryParamsHandling="merge" style="border: 2px solid rgb(71, 163, 106); width: 350px;">
                 <mat-card-content> 
-                  <mat-icon svgIcon="plus-circle" style="vertical-align: middle;"></mat-icon>
+                  <mat-icon svgIcon="user-med" style="vertical-align: middle;"></mat-icon>
                   <span>{{option.name}}</span>
                 </mat-card-content>
               </mat-card>

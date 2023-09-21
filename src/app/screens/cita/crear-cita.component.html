@@ -1,0 +1,111 @@
+<p>
+
+  <mat-toolbar color="primary">
+    <mat-toolbar-row style="align-items: self-end;">
+      <h2>Hola Aurora,<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</p>
+
+<div class="content content-main" style="display: block;">
+  
+    <table>
+      <tr>
+        <td>
+          <mat-stepper #stepper>
+            <mat-step [stepControl]="firstFormGroup" >
+              <form [formGroup]="firstFormGroup">
+                <ng-template matStepLabel>Configura tu Cita</ng-template>
+                <p>
+                  <mat-form-field style="width: 400px;">
+                    <mat-label>Seleciona una sede</mat-label>
+                    <mat-select (selectionChange)="obtenerSede($event)">
+                      <mat-option  *ngFor="let sede of sedes" value="{{sede.id}}">
+                        {{sede.name}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-hint align="end">{{sedeSelected.reference}}</mat-hint>
+                  </mat-form-field>
+                </p>
+                <p>
+                  <mat-form-field style="width: 400px;">
+                    <mat-label>Seleciona una fecha</mat-label>
+                    <input matInput [matDatepicker]="datepicker" [disabled]="sedeSelected.id == 0" 
+                    (dateChange)="obtenerFecha($event)">
+                      <mat-hint align="end">MM/DD/YYYY</mat-hint>
+                      <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+                      <mat-datepicker #datepicker>
+                        <mat-datepicker-actions>
+                          <button mat-button matDatepickerCancel>Cancel</button>
+                          <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                        </mat-datepicker-actions>
+                      </mat-datepicker>
+                  </mat-form-field>
+                </p>
+                <p></p>
+                  <table >
+                    <tr *ngFor="let options of optionsMedicos;">
+                      <td *ngFor="let option of options;">
+                        <mat-card matRipple [routerLink]="['/cita-hora']" 
+                        queryParamsHandling="merge" style="border: 2px solid rgb(146, 43, 43); width: 350px;"
+                        [ariaDisabled]="option.colaPacientes == 9" [style]="{'border': option.colaPacientes == 9 ? '2px solid rgb(146, 43, 43)' 
+                        : '2px solid rgb(71, 163, 106)', 'pointer-events': fechaStringSelected == '' || option.colaPacientes == 9 ? 'none' : 'auto' }">
+                          <mat-card-content> 
+                            <mat-icon svgIcon="user-med" style="vertical-align: middle;" ></mat-icon>
+                            <span>{{option.name}} - Cola: {{option.colaPacientes}}</span>
+                          </mat-card-content>
+                        </mat-card>
+                      </td>
+                    </tr>
+                </table>                  
+                
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
+              <form [formGroup]="secondFormGroup">
+                <ng-template matStepLabel>Fill out your address</ng-template>
+                <mat-form-field>
+                  <mat-label>Address</mat-label>
+                  <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
+                        required>
+                </mat-form-field>
+                <div>
+                  <p>Go to a different step to see the error state</p>
+                  <button mat-button matStepperPrevious>Back</button>
+                  <button mat-button matStepperNext>Next</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
+              <form [formGroup]="secondFormGroup">
+                <ng-template matStepLabel>Fill out your address</ng-template>
+                <mat-form-field>
+                  <mat-label>Address</mat-label>
+                  <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
+                        required>
+                </mat-form-field>
+                <div>
+                  <p>Go to a different step to see the error state</p>
+                  <button mat-button matStepperPrevious>Back</button>
+                  <button mat-button matStepperNext>Next</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel>Done</ng-template>
+              <p>You are now done.</p>
+              <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button (click)="stepper.reset()">Reset</button>
+              </div>
+            </mat-step>
+          </mat-stepper>
+        </td>
+        <td>
+
+        </td>
+      </tr>
+    </table>      
+</div>
+
+<router-outlet></router-outlet>

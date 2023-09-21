@@ -3,7 +3,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -13,13 +13,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import {MatRippleModule} from '@angular/material/core';
+//Import data
 import Especialidades from '../../../assets/data/especialidades.json';
-
+import Medicos from '../../../assets/data/medicos.json';
 
 @Component({
-  selector: 'especialidad',
-  templateUrl: './especialidad.component.html',
-  styleUrls: ['./especialidad.component.scss'],
+  selector: 'medico',
+  templateUrl: './medicos-especialidad.component.html',
+  styleUrls: ['./medicos-especialidad.component.scss'],
   standalone: true,
   imports: [
     MatIconModule,
@@ -38,10 +39,34 @@ import Especialidades from '../../../assets/data/especialidades.json';
   ],
 })
 
-export class EspecialidadComponent implements OnInit{
+export class MedicosEspecialidadComponent implements OnInit{
+
+  especialidadSelected: Especialidad = { name:"", id:0 };
+
+  especialidad: Especialidad[] = Especialidades;
+  options: Medico[] = Medicos;
 
   constructor(private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer){
+    private domSanitizer: DomSanitizer, private route: ActivatedRoute){
+
+      this.route.queryParams
+      .subscribe(params => {
+        
+        if (params['especialidadId'] != null){
+
+          if (this.especialidad.filter( o => o.id == params['especialidadId']) != null) {
+            this.especialidadSelected = this.especialidad.filter( o => o.id == params['especialidadId'])[0];
+          }
+          
+        }
+
+        if (this.especialidadSelected.id != 0) {
+          this.options = this.options.filter( m => m.especialidadId == this.especialidadSelected.id);
+        }
+        
+      }
+      
+    );
 
       this.matIconRegistry.addSvgIcon(
         'calendar_add_on',
@@ -66,9 +91,7 @@ export class EspecialidadComponent implements OnInit{
   }
 
   myControl = new FormControl('');
-  
-  options: Especialidad[] = Especialidades;
-  
+
   filteredOptions: Observable<string[]> = new Observable;
   optionsFiltered: Array<any> = [];
   
@@ -84,7 +107,7 @@ export class EspecialidadComponent implements OnInit{
 
   }
 
-  private converTwoDimensions(optionsFiltered: Array <Especialidad[]>, options: Especialidad[]){
+  private converTwoDimensions(optionsFiltered: Array <Medico[]>, options: Medico[]){
 
     optionsFiltered = [];
 
@@ -114,6 +137,15 @@ export class EspecialidadComponent implements OnInit{
     .map(o => o.name);
 
   }
+
+}
+
+interface Medico {
+
+  name: string;
+  medicoId: number;
+  especialidadId: number;
+  sedeId: number[];
 
 }
 
