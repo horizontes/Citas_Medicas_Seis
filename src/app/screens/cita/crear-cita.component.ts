@@ -23,7 +23,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatChipsModule} from '@angular/material/chips';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter'
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 
 //import data
 import Especialidades from '../../../assets/data/especialidades.json';
@@ -39,6 +39,7 @@ import * as _moment from 'moment';
   providers: [
     { provide: STEPPER_GLOBAL_OPTIONS, useValue: {showError: true}, },
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    { provide: MAT_DATE_LOCALE, useValue: 'es-US' },
     {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
   ],
   standalone: true,
@@ -77,16 +78,31 @@ export class CrearCitaComponent implements OnInit{
     secondCtrl: ['', Validators.required],
   });
 
+  thirdFormGroup = this._formBuilder.group({
+    thirdCtrl: ['', Validators.required],
+  });
+
   datePipe: DatePipe = new DatePipe("en-US");
+  datePipeEs: DatePipe = new DatePipe("es-US");
 
   disabledFirstNext : boolean = true;
   disabledSecondNext : boolean = true;
   disabledThirdNext : boolean = true;
 
-  date = new FormControl(_moment());
+  dias = [['Monday', 'Lunes'], ['Tuesday', 'Martes'], ['Wednesday', 'Miércoles'], ['Thursday', 'Jueves'],
+    ['Friday', 'Viernes'], ['Saturday', 'Sábado'], ['Sunday', 'Domingo']];
+
+  meses = [['Enero','January'], ['Febrero','February'], ['Marzo','March'], 
+  ['Abril','April'], ['Mayo','May'], ['Junio','June'], ['Julio','July'], 
+  ['Agosto','August'], ['Septiembre','September'], ['Octubre','October'], 
+  ['Noviembre','November'], ['Diciembre','December']];
+
+  date2 = new FormControl(_moment());
 
   fechaSelected: Date = new Date;
   fechaStringSelected: string | null = "";
+
+  horaSelected: number = 0;
 
   especialidades: Especialidad[] = Especialidades;
   especialidadSelected : Especialidad = { name:"", id:0 };
@@ -102,7 +118,9 @@ export class CrearCitaComponent implements OnInit{
   citas: Citas[] = Citas;
 
   constructor(private _formBuilder: FormBuilder, private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer, private route: ActivatedRoute){
+    private domSanitizer: DomSanitizer, private route: ActivatedRoute, private dateAdapter: DateAdapter<Date>){
+
+      this.dateAdapter.setLocale('es-US');
 
       this.route.queryParams
       .subscribe(params => {
@@ -176,8 +194,10 @@ export class CrearCitaComponent implements OnInit{
 
     if (e.value != null) {
 
+      this.date2 = new FormControl(_moment(e.value));
       this.fechaStringSelected = this.transformDate(e.value);
       this.obtenerCitas(this.fechaStringSelected);
+      console.log(this.date2.value?.toDate());
 
     }
     
@@ -192,6 +212,9 @@ export class CrearCitaComponent implements OnInit{
           m.colaPacientes = 0;
           for (let i = 0; i < this.citas.length; i++) {
             const c = this.citas[i];
+            if (m.citas == null) {
+              m.citas = [];
+            }
             if (c.medicoId == m.medicoId && this.fechaStringSelected == c.fecha){
               m.citas.push(c);
               m.colaPacientes = +c.duracion;
@@ -208,6 +231,7 @@ export class CrearCitaComponent implements OnInit{
     if (e.value != null) {
       this.medicoSelected = e.value;
       this.disabledFirstNext = false;
+      this.obtenerHorasLibres(this.medicoSelected);
     }
 
   }
@@ -215,13 +239,48 @@ export class CrearCitaComponent implements OnInit{
   obtenerHorasLibres(m : Medico){
 
     if (m != null){
-      const f = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
-      for (let index = 0; index < f.length; index++) {
-        y.hora.split(':')[0];
-          m.horasLibres = f.filter(x => m.citas.filter(y => x == y.hora.split(':')[0] as number));
-      }
+      const hf: number[] = [];
+      m.citas.map(c => {
+        if (c.duracion == 1){
+            hf.push(Number(c.hora.split(':')[0]));
+          } else if (c.duracion > 1){
+            for (let i = 0; i < c.duracion; i++) {
+              hf.push(Number(c.hora.split(':')[0]) + i);
+            }
+          }
+      });
+
+      m.horasLibres = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18].filter(
+        x => !hf.includes(x));
+
+      console.log(m.horasLibres);
 
     }
+
+  }
+
+  obtenerFullDate(){
+    if (this.fechaSelected != null && this.date2.value != null){
+      return this.traducirFecha(
+        this.datePipe.transform(this.date2.value.toDate(), 'EEEE|, dd *e |MMMM| *el YYYY'));
+    }
+    return "";
+  }
+
+  traducirFecha(s: string | null){
+    var a = s ? s.split('|'): [];
+    var d, m = "";
+
+    this.dias.forEach(x => { if (x[0] == a[0]){ d = x[1]; } });
+    
+    this.meses.forEach(x => { if (x[1] == a[2]){ m = x[0]; } });
+
+    return (d + a[1] + m + a[3]).replaceAll('*', 'd');
+  }
+
+  obtenerHora(e: any){
+
+    this.horaSelected = e.value;
 
   }
 
@@ -245,7 +304,7 @@ export class CrearCitaComponent implements OnInit{
 
   private transformDate(d : Date){
 
-    return this.datePipe.transform(d as Date, "MM/dd/yyyy");
+    return this.datePipe.transform(d, "dd/MM/yyyy");
 
   }
 

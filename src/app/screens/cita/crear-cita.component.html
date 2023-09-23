@@ -31,13 +31,13 @@
                   <mat-form-field style="width: 400px;">
                     <mat-label>Seleciona una fecha</mat-label>
                     <input matInput formControlName="firstCtrl" [matDatepicker]="datepicker" [disabled]="sedeSelected.id == 0" 
-                    (dateChange)="obtenerFecha($event)" [formControl]="date" required>
-                      <mat-hint align="end">MM/DD/YYYY</mat-hint>
+                    (dateChange)="obtenerFecha($event)" required>
+                      <mat-hint align="end">dd/mm/yyyy</mat-hint>
                       <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
                       <mat-datepicker #datepicker>
                         <mat-datepicker-actions>
-                          <button mat-button matDatepickerCancel>Cancel</button>
-                          <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                          <button mat-button matDatepickerCancel>Cancelar</button>
+                          <button mat-raised-button color="primary" matDatepickerApply>Seleccionar</button>
                         </mat-datepicker-actions>
                       </mat-datepicker>
                   </mat-form-field>
@@ -49,7 +49,7 @@
                           <mat-chip-option [value]="option" aria-label="medicoSelected" *ngFor="let option of options;" style="width: 350px;"
                           [style]="{'border': option.colaPacientes == 9 ? '2px solid rgb(146, 43, 43)' : '2px solid rgb(71, 163, 106)', 
                           'pointer-events': fechaStringSelected == '' || option.colaPacientes == 9 ? 'none' : 'auto' }">
-                            {{option.name}}{{option.colaPacientes != null ? " - Cola:" + option.colaPacientes : ""}}
+                            <mat-icon svgIcon="user-med"></mat-icon> {{option.name}}{{option.colaPacientes != null ? " - Cola:" + option.colaPacientes : ""}}
                           </mat-chip-option>
                       </td>
                     </tr>
@@ -65,51 +65,130 @@
               <form [formGroup]="secondFormGroup">
                 <ng-template matStepLabel>Elige la fecha y hora</ng-template>
                 <p>
-                  El medio que te atendera es <span>{{medicoSelected.name}}</span>
+                  El medico que te atendera es <span style="color: rgb(109, 55, 146)">{{medicoSelected.name}}</span>
                 </p>
                 <p>
                   <mat-form-field style="width: 400px;">
                     <mat-label>Seleciona una fecha</mat-label>
-                    <input matInput formControlName="firstCtrl" [matDatepicker]="datepicker2" [disabled]="sedeSelected.id == 0" 
-                    (dateChange)="obtenerFecha($event)" [formControl]="date" required>
-                      <mat-hint align="end">MM/DD/YYYY</mat-hint>
+                    <input matInput formControlName="secondCtrl" [matDatepicker]="datepicker2" [disabled]="sedeSelected.id == 0" 
+                    (dateChange)="obtenerFecha($event)" [formControl]="date2" required>
+                      <mat-hint align="end">dd/mm/yyyy</mat-hint>
                       <mat-datepicker-toggle matIconSuffix [for]="datepicker2"></mat-datepicker-toggle>
                       <mat-datepicker #datepicker2>
                         <mat-datepicker-actions>
-                          <button mat-button matDatepickerCancel>Cancel</button>
-                          <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+                          <button mat-button matDatepickerCancel>Cancelar</button>
+                          <button mat-raised-button color="primary" matDatepickerApply>Seleccionar</button>
                         </mat-datepicker-actions>
                       </mat-datepicker>
                   </mat-form-field>
                 </p>
+                <p>
+                  <mat-chip-listbox (change)="obtenerHora($event)" formControlName="secondCtrl" [value]="" required>
+                    <table>
+                      <tr>
+                        <td>
+                          <p>{{obtenerFullDate()}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <mat-chip-option *ngFor="let hora of medicoSelected.horasLibres;" 
+                            style="border: 2px solid rgb(71, 163, 106);">
+                              {{hora < 10 ? '0': ''}}{{hora}}:00
+                          </mat-chip-option>
+                        </td>
+                      </tr>
+                    </table>
+                    
+                  </mat-chip-listbox>
+                </p>
                 <div>
-                  <p>Go to a different step to see the error state</p>
-                  <button mat-button matStepperPrevious>Back</button>
-                  <button mat-button matStepperNext>Next</button>
+                  
+                  <button mat-button matStepperPrevious>Anterior</button>
+                  <button mat-button matStepperNext>Continuar</button>
                 </div>
               </form>
             </mat-step>
-            <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
-              <form [formGroup]="secondFormGroup">
-                <ng-template matStepLabel>Fill out your address</ng-template>
-                <mat-form-field>
-                  <mat-label>Address</mat-label>
-                  <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
-                        required>
-                </mat-form-field>
+            <mat-step [stepControl]="thirdFormGroup">
+              <form [formGroup]="thirdFormGroup">
+                <ng-template matStepLabel>Modo de consulta</ng-template>
+                <mat-chip-listbox formControlName="thirdCtrl" required="">
+                  <table>
+                    <tr>
+                      <td>
+                        <p>
+                          <mat-label>Elige una opcion</mat-label>
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>
+                          <mat-chip-option style="border: 2px solid rgb(71, 163, 106);height: 50px;">
+                            <span>Sin seguro &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - S/.100.00</span>
+                          </mat-chip-option>          
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>
+                          <mat-chip-option>
+                            <span>Agregar seguro</span>
+                          </mat-chip-option> 
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </mat-chip-listbox>
                 <div>
-                  <p>Go to a different step to see the error state</p>
-                  <button mat-button matStepperPrevious>Back</button>
-                  <button mat-button matStepperNext>Next</button>
+                  <button mat-button matStepperPrevious>Anterior</button>
+                  <button mat-button matStepperNext>Siguiente</button>
                 </div>
               </form>
             </mat-step>
             <mat-step>
-              <ng-template matStepLabel>Done</ng-template>
-              <p>You are now done.</p>
+              <ng-template matStepLabel>Confirmar</ng-template>
+              <p>
+                <span><h2>Resumen de Cita</h2></span>
+              </p>
+              <p>
+                <span style="color: rgb(109, 55, 146)">Especialidad</span>
+              </p>
+              <p>
+                {{especialidadSelected.name}}
+              </p>
+              <p>
+                <span style="color: rgb(109, 55, 146)">Medico</span>
+              </p>
+              <p>
+                {{medicoSelected.name}}
+              </p>
+              <p>
+                <span style="color: rgb(109, 55, 146)">Fecha y hora</span>
+              </p>
+              <p>
+                {{obtenerFullDate()}}
+              </p>
+              <p>
+                {{horaSelected}}
+              </p>
+              <p>
+                <span style="color: rgb(109, 55, 146)">Asegurador</span>
+              </p>
+              <p>
+                Sin seguro
+              </p>
+              <p>
+                <span style="color: rgb(109, 55, 146)">Pago por cita</span>
+              </p>
+              <p>
+                S/.100.00
+              </p>
               <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button (click)="stepper.reset()">Reset</button>
+                <button mat-button matStepperPrevious>Atras</button>
+                <button mat-button routerLink="/inicio">Confirmar</button>
+                <button mat-button (click)="stepper.reset()">Cancelar</button>
               </div>
             </mat-step>
           </mat-stepper>
