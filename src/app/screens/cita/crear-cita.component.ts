@@ -29,18 +29,21 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
 import Especialidades from '../../../assets/data/especialidades.json';
 import Medicos from '../../../assets/data/medicos.json';
 import Sedes from '../../../assets/data/sedes.json';
-import Citas from '../../../assets/data/citas.json';
+
 import * as _moment from 'moment';
+import { Cita } from 'src/app/citas.model';
+import { CitasService } from 'src/app/services/citas.services';
+
 
 @Component({
   selector: 'crearCita',
   templateUrl: './crear-cita.component.html',
   styleUrls: ['./crear-cita.component.scss'],
   providers: [
-    { provide: STEPPER_GLOBAL_OPTIONS, useValue: {showError: true}, },
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    { provide: STEPPER_GLOBAL_OPTIONS, useValue: {showError: true} },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_LOCALE, useValue: 'es-US' },
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
   standalone: true,
   imports: [
@@ -69,6 +72,7 @@ import * as _moment from 'moment';
 })
 
 export class CrearCitaComponent implements OnInit{
+
 
   firstFormGroup = this._formBuilder.group({
     firstCtrl: ['', Validators.required],
@@ -103,6 +107,7 @@ export class CrearCitaComponent implements OnInit{
   fechaStringSelected: string | null = "";
 
   horaSelected: number = 0;
+  horaStringSelected: string = '';
 
   especialidades: Especialidad[] = Especialidades;
   especialidadSelected : Especialidad = { name:"", id:0 };
@@ -114,13 +119,19 @@ export class CrearCitaComponent implements OnInit{
 
   sedes: Sede[] = Sedes;
   sedeSelected: Sede = { name: "", id: 0,  district: "", address: "", reference: "" };
-  
-  citas: Citas[] = Citas;
+
+  citas: Cita[] = [];
 
   constructor(private _formBuilder: FormBuilder, private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer, private route: ActivatedRoute, private dateAdapter: DateAdapter<Date>){
+    private domSanitizer: DomSanitizer, private route: ActivatedRoute, 
+    private dateAdapter: DateAdapter<Date>, private service: CitasService){
 
       this.dateAdapter.setLocale('es-US');
+      
+      
+      service.getCitasList().subscribe(data => {
+        this.citas = data;
+      });
 
       this.route.queryParams
       .subscribe(params => {
@@ -128,7 +139,8 @@ export class CrearCitaComponent implements OnInit{
         if (params['especialidadId'] != null){
 
           if (this.especialidades.filter( o => o.id == params['especialidadId']) != null) {
-            this.especialidadSelected = this.especialidades.filter( o => o.id == params['especialidadId'])[0];
+            this.especialidadSelected = this.especialidades
+              .filter( o => o.id == params['especialidadId'])[0];
           }
           
         }
@@ -146,22 +158,26 @@ export class CrearCitaComponent implements OnInit{
 
       this.matIconRegistry.addSvgIcon(
         'calendar_add_on',
-        this.domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/svg/calendar_add_on.svg')
+        this.domSanitizer
+          .bypassSecurityTrustResourceUrl('../../../assets/svg/calendar_add_on.svg')
       );
 
       this.matIconRegistry.addSvgIcon(
         'user-med',
-        this.domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/svg/user-md.svg')
+        this.domSanitizer
+          .bypassSecurityTrustResourceUrl('../../../assets/svg/user-md.svg')
       );
 
       this.matIconRegistry.addSvgIcon(
         'serv-med',
-        this.domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/svg/serv-med.svg')
+        this.domSanitizer
+          .bypassSecurityTrustResourceUrl('../../../assets/svg/serv-med.svg')
       );
 
       this.matIconRegistry.addSvgIcon(
         'plus-circle',
-        this.domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/svg/plus-circle.svg')
+        this.domSanitizer
+          .bypassSecurityTrustResourceUrl('../../../assets/svg/plus-circle.svg')
       );
 
   }
@@ -180,7 +196,8 @@ export class CrearCitaComponent implements OnInit{
       this.sedeSelected = this.sedes.filter( s => s.id == id)[0];
       
       this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, 
-                            this.medicos.filter(m => m.sedeId.includes(this.sedeSelected.id)));
+                            this.medicos.filter(
+                              m => m.sedeId.includes(this.sedeSelected.id)));
 
     } else {
 
@@ -210,6 +227,7 @@ export class CrearCitaComponent implements OnInit{
         if (this.medicos[i] != null){
           const m = this.medicos[i];
           m.colaPacientes = 0;
+          
           for (let i = 0; i < this.citas.length; i++) {
             const c = this.citas[i];
             if (m.citas == null) {
@@ -250,8 +268,8 @@ export class CrearCitaComponent implements OnInit{
           }
       });
 
-      m.horasLibres = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18].filter(
-        x => !hf.includes(x));
+      m.horasLibres = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+        .filter(x => !hf.includes(x));
 
       console.log(m.horasLibres);
 
@@ -261,26 +279,66 @@ export class CrearCitaComponent implements OnInit{
 
   obtenerFullDate(){
     if (this.fechaSelected != null && this.date2.value != null){
+
       return this.traducirFecha(
-        this.datePipe.transform(this.date2.value.toDate(), 'EEEE|, dd *e |MMMM| *el YYYY'));
+        this.datePipe.transform(this.date2.value.toDate(), 
+        'EEEE|, dd *e |MMMM| *el YYYY'));
+
     }
     return "";
   }
 
   traducirFecha(s: string | null){
+
     var a = s ? s.split('|'): [];
     var d, m = "";
 
     this.dias.forEach(x => { if (x[0] == a[0]){ d = x[1]; } });
-    
     this.meses.forEach(x => { if (x[1] == a[2]){ m = x[0]; } });
 
     return (d + a[1] + m + a[3]).replaceAll('*', 'd');
+
   }
 
   obtenerHora(e: any){
 
-    this.horaSelected = e.value;
+    this.horaStringSelected = e.value;
+
+  }
+
+  agregarCita(){
+
+    console.log(1);
+
+    const c: Cita = 
+    { 
+      medicoId: this.medicoSelected.medicoId,
+      pacienteId: 1,
+      fecha: this.fechaStringSelected ? this.fechaStringSelected: "",
+      hora: this.horaStringSelected,
+      duracion: 1,
+      total: 0
+    };
+
+    this.service.createCitas(c).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (e) => {
+        console.log(e);
+      }
+    });
+
+  
+    this.medicoSelected = { name:"", medicoId:0, especialidadId:0, sedeId: [], colaPacientes: 0, 
+    citas:[], horasLibres:[] };
+ 
+    this.especialidadSelected = { name:"", id:0 };
+ 
+    this.sedeSelected = { name: "", id: 0,  district: "", address: "", reference: "" };
+
+    this.horaSelected = 0;
+    this.horaStringSelected = '';
 
   }
 
@@ -318,7 +376,7 @@ interface Medico {
   sedeId: number[];
   colaPacientes: number;
   horasLibres: number[];
-  citas: Citas[];
+  citas: Cita[];
 
 }
 
@@ -337,14 +395,6 @@ interface Especialidad {
   id: number;
 }
 
-interface Citas{
 
-  medicoId: number;
-  pacienteId: number;
-  fecha: string;
-  hora: string;
-  duracion: number;
-  total: number;
 
-}
 

@@ -153,42 +153,42 @@
                 <span><h2>Resumen de Cita</h2></span>
               </p>
               <p>
-                <span style="color: rgb(109, 55, 146)">Especialidad</span>
+                <span style="color: rgb(109, 55, 146);">Especialidad</span>
               </p>
               <p>
                 {{especialidadSelected.name}}
               </p>
               <p>
-                <span style="color: rgb(109, 55, 146)">Medico</span>
+                <span style="color: rgb(109, 55, 146);">Medico</span>
               </p>
               <p>
                 {{medicoSelected.name}}
               </p>
               <p>
-                <span style="color: rgb(109, 55, 146)">Fecha y hora</span>
+                <span style="color: rgb(109, 55, 146);">Fecha y hora</span>
               </p>
               <p>
                 {{obtenerFullDate()}}
               </p>
               <p>
-                {{horaSelected}}
+                {{horaStringSelected}}
               </p>
               <p>
-                <span style="color: rgb(109, 55, 146)">Asegurador</span>
+                <span style="color: rgb(109, 55, 146);">Asegurador</span>
               </p>
               <p>
                 Sin seguro
               </p>
               <p>
-                <span style="color: rgb(109, 55, 146)">Pago por cita</span>
+                <span style="color: rgb(109, 55, 146);">Pago por cita</span>
               </p>
               <p>
                 S/.100.00
               </p>
               <div>
-                <button mat-button matStepperPrevious>Atras</button>
-                <button mat-button routerLink="/inicio">Confirmar</button>
                 <button mat-button (click)="stepper.reset()">Cancelar</button>
+                <button mat-button matStepperPrevious>Atras</button>
+                <button mat-button (click)="agregarCita(); stepper.reset()" routerLink="/home">Confirmar</button>
               </div>
             </mat-step>
           </mat-stepper>

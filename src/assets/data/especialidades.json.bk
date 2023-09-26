@@ -1,0 +1,19 @@
+[
+  { "name":"Anatomia", "id":1 }, { "name":"Patológica", "id":2 }, { "name":"Anestesiología", "id":3 }, { "name":"Cardiología", "id":4 }, 
+  { "name":"Cirugía De Cabeza, Cuello Y Maxilofacial", "id":5 }, { "name":"Cirugía General", "id":6 } , { "name":"Cirugía Oncológica", "id":7 }, 
+  { "name":"Cirugía Pediátrica", "id":8 }, { "name":"Cirugía Plástica", "id":9 }, { "name":"Cirugía De Tórax Y Cardiovascular", "id":10 }, 
+  { "name":"Dermatología", "id":11 }, { "name":"Endocrinología", "id":12 }, { "name":"Gastroenterología", "id":52 }, { "name":"Geriatría", "id":53 }, 
+  { "name":"Ginecología Y Obstetricia", "id":54 }, { "name":"Hematología", "id":55 }, { "name":"Inmunología Y Alergia", "id":13 } , 
+  { "name":"Medicina Ocupacional Y Del Medio Ambiente", "id":14 }, { "name":"Medicina De Emergencias Y Desastres", "id":15 }, 
+  { "name":"Medicina De Enfermedades Infecciosas Y Tropicales", "id":16 }, { "name":"Medicina Familiar Y Comunitaria", "id":17 }, 
+  { "name":"Medicina Fisica Y De Rehabilitación", "id":18 }, { "name":"Medicina Intensiva", "id":19 }, { "name":"Medicina Interna", "id":20 }, 
+  { "name":"Medicina Nuclear", "id":21 } , { "name":"Medicina Oncológica", "id":22 }, { "name":"Nefrología", "id":23 }, { "name":"Neumología", "id":24 }, 
+  { "name":"Neurocirugía", "id":25 }, { "name":"Neurología", "id":26 }, { "name":"Oftalmología", "id":27 }, { "name":"Ortopedia Y Traumatología", "id":28 }, 
+  { "name":"Otorrinolaringología", "id":29 }, { "name":"Patología Clínica", "id":30 }, { "name":"Pediatría", "id":31 }, { "name":"Psiquiatría", "id":32 }, 
+  { "name":"Radiología", "id":33 }, { "name":"Radioterapia", "id":34 }, { "name":"Reumatología", "id":35 }, { "name":"Urología", "id":36 }, 
+  { "name":"Odontología", "id":37 }, { "name":"Cardiología Pediátrica", "id":38 }, { "name":"Endocrinología Pediátrica", "id":39 }, 
+  { "name":"Gastroenterología Pediátrica", "id":40 }, { "name":"Ginecología Oncológica", "id":41 }, { "name":"Medicina Intensiva Pediátrica", "id":42 }, 
+  { "name":"Nefrología Pediátrica", "id":43 }, { "name":"Neonatología", "id":44 }, { "name":"Neumología Pediátrica", "id":45 }, 
+  { "name":"Neurocirugía Pediátrica", "id":46 }, { "name":"Neurología Pediátrica", "id":47 }, { "name":"Oncología Pediátrica", "id":48 }, 
+  { "name":"Psiquiatria De Adicciones", "id":49 }, { "name":"Psiquiatria Del Niño Y Del Adolescente", "id":50 }, { "name":"Urología Pediátrica", "id":51 }
+]

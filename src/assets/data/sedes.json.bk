@@ -1,0 +1,14 @@
+[
+    { "id": 1, "name": "Clinica San Pablo - Surco", "district": "Surco", "address": "Av. El polo 789", "reference": "Cerca de Centro el Polo" },
+    { "id": 2, "name": "Clinica San Gabriel - San Miguel", "district": "San Miguel", "address": "Av. la Marina 2955", "reference": "Cerca UPC San Miguel" },
+    { "id": 3, "name": "Clinica Santa Martha del Sur - SJM", "district": "San Juan de Miraflores", "address": "Av. Belisario Suarez 998", "reference": "Cerca de Municipalidad SJM" },
+    { "id": 4, "name": "Clinica San Juan Bautista - SJL", "district": "San Juan de Lurigancho", "address": "Av. Próceres de la Independencia 1764", "reference": "Cerca de Estacion Los Jardines del Metro" },
+    { "id": 5, "name": "Clinica Jesus del Norte - Independencia", "district": "Independencia", "address": "Av. Carlos Izaguirre 153", "reference": "Cerca de MegaPlaza" },
+    { "id": 6, "name": "Clinica San Pablo - Trujillo", "district": "La Merced - Trujillo", "address": "Av. Húsares de Junín 690", "reference": "Cerca de la UPAO" },
+    { "id": 7, "name": "Clinica San Pablo - Huaraz", "district": "Huaraz - Huaraz", "address": "Jr. Huaylas Nº 172", "reference": "Cerca de la Municipalidad de Huaraz" },
+    { "id": 8, "name": "Chacarilla Centro Especializado - San Borja", "district": "San Borja", "address": "Av. Primavera 999", "reference": "Cerca del cruce Angamos con Panamericana Sur" },
+    { "id": 9, "name": "Centro Dental San Pablo - Surco", "district": "Surco", "address": "Av. Manuel Olguín 901", "reference": "Cerca de Centro el Polo" },
+    { "id": 10, "name": "Clinica San Pablo - Asia", "district": "Asia", "address": "Ctra. Panamericana S Km. 97.5", "reference": "Cerca del boulevar de Asia" },
+    { "id": 11, "name": "Clinica San Pablo - Arequipa", "district": "Cerro Colorado - Arequipa", "address": "Av. Metropolitana , esquina con Calle 7 ", "reference": "Cerca del Colegio Domingo Savio" }
+]
+    
