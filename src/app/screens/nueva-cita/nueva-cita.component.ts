@@ -3,6 +3,10 @@ import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { Usuario } from 'src/app/models/usuario.model';
+import { DataService } from 'src/app/services/data.service';
+import { SesionComponent } from 'src/app/services/login/sesion.component';
+import { UsuariosService } from 'src/app/services/usuario.services';
 
 @Component({
   templateUrl: './nueva-cita.component.html',
@@ -12,8 +16,18 @@ export class NuevaCitaComponent {
 
   location: Location;
 
+  user: Usuario = SesionComponent.user;
+
   constructor(private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer, location: Location){
+    private domSanitizer: DomSanitizer, location: Location, 
+    private usuarioService: UsuariosService){
+
+    var id = localStorage.getItem('usuarioId');
+    if (id) {
+      this.usuarioService.getUsuariosById(+id).subscribe(d=> {
+        this.user = d;
+      });
+    }
 
       this.location = location;
 

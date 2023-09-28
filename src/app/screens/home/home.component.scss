@@ -21,7 +21,52 @@
 
 }
 
-a {
+a{
+  align-self: self-start;
+}
+
+
+table {
+	width:100%;
+	//border:1px solid rgb(84, 108, 157);
+}
+
+th {
+	//display:flex;
+
+	background:#a37eaf;
+  color: white;
+  text-align: center;
+}
+
+.th {
+	
+	background:#a37eaf;
+  color: white;
+  text-align: center;
+}
+
+tr {
+
+	
+	&:nth-of-type(odd) {
+		background: rgb(255, 255, 255);
+	}
+}
+
+td, .header__item {
+	flex: 1 1 20%;
+  text-align: center;
+}
+
+.cdk-column-pacienteId {
+  width: 32px;
+  border-right: 1px solid currentColor;
+  padding-right: 24px;
+  text-align: center;
+}
+
+a.button, button {
 
   text-decoration-line: none;
   justify-content: flex-start;
@@ -37,6 +82,7 @@ a {
   border-left-style: solid;
   border-bottom-width: 0px;
   border-bottom-style: solid;
+  border-radius: 10px;
   padding-top: 4px;
   padding-left: 7px;
   padding-right: 7px;
@@ -50,13 +96,4 @@ a {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
-  &:hover {
-    //background-color: rgb(138, 110, 28);
-  }
-
-  font-size: 1.0em;
-
-  width: fit-content;
-  height: fit-content;
 }

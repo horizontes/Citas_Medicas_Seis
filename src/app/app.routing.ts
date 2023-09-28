@@ -10,6 +10,7 @@ import { SettingsComponent } from './screens/settings/settings.component';
 import { EspecialidadComponent } from './screens/especialidad/especialidad.component';
 import { MedicosEspecialidadComponent } from './screens/medico/medicos-especialidad.component';
 import { CrearCitaComponent } from './screens/cita/crear-cita.component';
+import { SesionComponent } from './services/login/sesion.component';
 
 const routes: Routes = [
   {
@@ -44,10 +45,14 @@ const routes: Routes = [
     path: 'crear-cita',
     component: CrearCitaComponent,
   },
+  {
+    path: 'Login',
+    component: SesionComponent,
+  },
   // redirect to `home` if there is no path
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'Login',
     pathMatch: 'full',
   },
 ];

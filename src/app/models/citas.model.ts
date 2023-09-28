@@ -1,10 +1,11 @@
 export class Cita {
 
+    citaId!: number;
     medicoId!: number;
     pacienteId!: number;
     fecha!: string;
     hora!: string;
     duracion!: number;
-    total?: number;
+    sede?: number;
 
 }

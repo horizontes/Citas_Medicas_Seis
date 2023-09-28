@@ -2,24 +2,108 @@
 
   <mat-toolbar color="primary">
     <mat-toolbar-row style="align-items: self-end;">
-      <h2>Hola Aurora,<br/><span style="font-size: 16px; font-style: italic;">Nosotros queremos ayudarte</span></h2>
+
+      <h2>Hola {{user ? user.nombres : "Invitado"}},<br/><span style="font-size: 16px; font-style: italic;">Nosotros queremos ayudarte</span></h2>
     </mat-toolbar-row>
   </mat-toolbar>
 </p>
-<div class="content content-main">
+<div class="content content-main"> 
   <table style="align-items: center; text-align: center;">
+    <tr>
+      <td [ngStyle]="{ 'display': error != '' ? 'none': 'block'}">
+        Estas son sus citas agendadas, si desea cancelarla, seleccione un y dar click en 
+        <button (click)="eliminarCita()">Cancelar</button>
+      </td>
+    </tr>
+    <tr>
+      <td [ngStyle]="{ 'display': error != '' ? 'none': 'block'}">
+        <a href="/nueva-cita" style="display: block; align-self: self-start;">Deseas agendar una cita nueva</a>
+      </td>
+    </tr>
   <tr>
-    <td><span style="font-size: 20px;">Todavia no tienes citas programadas.</span><br></td>
+    <td [ngStyle]="{ 'display': error == '' ? 'none': 'block'}">
+      <span style="font-size: 20px;">{{error}}</span><br>
+    </td>
+    <td [ngStyle]="{ 'display': error != '' ? 'none': 'block'}">
+      <table cdk-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()"
+                          [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)"
+                          [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- User name Definition -->
+        <ng-container cdkColumnDef="pacienteId" >
+          <th cdk-header-cell *cdkHeaderCellDef> Codigo </th>
+          <td cdk-cell *cdkCellDef="let row"> {{row.pacienteId}} </td>
+        </ng-container>
+
+        <!-- User name Definition -->
+        <ng-container cdkColumnDef="nombre">
+          <th cdk-header-cell *cdkHeaderCellDef> Nombre </th>
+          <td cdk-cell *cdkCellDef="let row"> {{row.nombre}} </td>
+        </ng-container>
+
+        <!-- User name Definition -->
+        <ng-container cdkColumnDef="fecha">
+          <th cdk-header-cell *cdkHeaderCellDef> Fecha </th>
+          <td cdk-cell *cdkCellDef="let row"> {{row.fecha}} </td>
+        </ng-container>
+        <!-- User name Definition -->
+        <ng-container cdkColumnDef="hora">
+          <th cdk-header-cell *cdkHeaderCellDef> Hora </th>
+          <td cdk-cell *cdkCellDef="let row"> {{row.hora}} </td>
+        </ng-container>
+      
+        <ng-container cdkColumnDef="medico">
+          <th cdk-header-cell *cdkHeaderCellDef> Medico </th>
+          <td cdk-cell *cdkCellDef="let row"> {{row.medico}} </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="lugar">
+          <th cdk-header-cell *cdkHeaderCellDef> Sede </th>
+          <td cdk-cell *cdkCellDef="let row">{{row.lugar}} </td>
+        </ng-container>
+        <ng-container cdkColumnDef="direccion">
+          <th cdk-header-cell *cdkHeaderCellDef> Mapa </th>
+          <td cdk-cell *cdkCellDef="let row">
+            <a href='https://www.google.com/maps/place/{{row.direccion}}' target="_blank"><mat-icon style="vertical-align: middle;">map</mat-icon> </a>
+          </td>
+        </ng-container>
+      
+        <!-- Header and Row Declarations -->
+        <tr cdk-header-row *cdkHeaderRowDef="['select','pacienteId', 'nombre', 'fecha', 'hora', 'medico', 'lugar', 'direccion']"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: ['select','pacienteId', 'nombre', 'fecha', 'hora' , 'medico' , 'lugar', 'direccion']"></tr>
+      </table>      
+    </td>
   </tr>
   <tr>
-    <td ><mat-icon svgIcon="calendar_add_on" style="width: 10vh; height: 10vh;"></mat-icon></td>
+    <td [ngStyle]="{ 'display': error == '' ? 'none': 'block'} ">
+      <mat-icon svgIcon="calendar_add_on" style="width: 10vh; height: 10vh;"></mat-icon>
+    </td>
   </tr>
   <tr>
-    <td>
-      <a mat-button href="/nueva-cita">
-        Agendar una Cita
+    <td [ngStyle]="{ 'display': error == '' ? 'none': 'block'} ">
+      <a class="button" mat-button href="/nueva-cita">
+        Nueva cita
       </a>
-</td>
+    </td>
+  </tr>
+  <tr>
+    
   </tr>
 </table>
   

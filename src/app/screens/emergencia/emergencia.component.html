@@ -1,0 +1,24 @@
+<p>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row style="align-items: self-end;">
+      <h2>Hola {{user ? user.nombres : "Invitado"}},<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</p>
+<mat-toolbar style="background-color: white;">
+  <mat-toolbar-row>
+    <h4 style="color: black;">Escribenos al whatsapp de emergencia y en menos de cinco minutos te llamaremos. <br></h4>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="content content-main"> 
+  <div style="display: flex; align-items: center; text-align: center;">
+    <a href="https://api.whatsapp.com/send/?phone=51935395381&text=Hola%2C+es+una+emergencia.&type=phone_number&app_absent=0" 
+    target="_blank"
+    style=" width: 160px; height: 180px;">
+      <p><mat-icon svgIcon="whatsapp-icon" style="width: 20vh; height: 20vh;"></mat-icon></p>
+      <p><span style="font-size: 20px; padding-top: 60px;padding-left: 35px;padding-right: 35px;padding-bottom: 60px;">Emergencia</span></p>
+    </a>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

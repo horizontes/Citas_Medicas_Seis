@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -10,9 +11,11 @@ import {
 import { SidenavService } from './components/sidenav/sidenav.service';
 
 import { DefaultSidenavComponent } from './sidenavs/default-sidenav/default-sidenav.component';
+import { SesionComponent } from './services/login/sesion.component';
+import { Usuario } from './models/usuario.model';
+import { DataService } from './services/data.service';
+import { UsuariosService } from './services/usuario.services';
 
-import citasjson from '../assets/data/citas.json';
-import { Cita } from './citas.model';
 
 
 @Component({
@@ -20,25 +23,41 @@ import { Cita } from './citas.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   title = 'app-citas-cuatro';
   constructor(
     public sidenavService: SidenavService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dataService: DataService,
+    private usuarioService: UsuariosService
   ) {
 
+    this.dataService.data$.subscribe(data => {
+      this.showMenu = data != null;
+    });
 
+    var id = localStorage.getItem('usuarioId');
+    if (id) {
+      usuarioService.getUsuariosById(+id).subscribe(d=> {
+        this.user = d;
+        this.showMenu = d != null;
+      });
+    }
 
   }
 
-  public static citas: Cita[] = citasjson;
+  @Input("user")
+  user: Usuario = SesionComponent.user;
+
+  showMenu: boolean = false;
+
+  ngOnInit(): void {
+
+  }
 
   ngAfterViewInit(): void {
-    this.sidenavService.push(DefaultSidenavComponent);
-    this.cdr.detectChanges();
-
-    
-
+      this.sidenavService.push(DefaultSidenavComponent);
+      this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {

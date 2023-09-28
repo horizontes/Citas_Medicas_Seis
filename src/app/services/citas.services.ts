@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Cita } from '../citas.model';
+import { Cita } from '../models/citas.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CitasService {
 
-  private basUrl = "http://localhost:8080/api/citas"
+  private basUrl = "http://localhost:8080/api/citas";
 
   constructor(private httpClient: HttpClient) {
   }
@@ -21,8 +21,8 @@ export class CitasService {
     return this.httpClient.post(`${this.basUrl}`, cita);
   }
 
-  getCitasById(id: number): Observable<Cita>{
-    return this.httpClient.get<Cita>(`${this.basUrl}/${id}`);
+  getCitasById(id: number): Observable<Cita[]>{
+    return this.httpClient.get<Cita[]>(`${this.basUrl}/${id}`);
   }
 
   updateCitas(id:number, cita:Cita): Observable<Object>{
@@ -30,6 +30,6 @@ export class CitasService {
   }
 
   deleteCitas(id:number): Observable<Object>{
-    return this.httpClient.delete(`${this.basUrl}/${id}`);
+    return this.httpClient.get(`http://localhost:8080/api/eliminarCitas/${id}`);
   }
 } 

@@ -16,6 +16,10 @@ import {MatRippleModule} from '@angular/material/core';
 //Import data
 import Especialidades from '../../../assets/data/especialidades.json';
 import Medicos from '../../../assets/data/medicos.json';
+import { SesionComponent } from 'src/app/services/login/sesion.component';
+import { Usuario } from 'src/app/models/usuario.model';
+import { DataService } from 'src/app/services/data.service';
+import { UsuariosService } from 'src/app/services/usuario.services';
 
 @Component({
   selector: 'medico',
@@ -46,17 +50,34 @@ export class MedicosEspecialidadComponent implements OnInit{
   especialidad: Especialidad[] = Especialidades;
   options: Medico[] = Medicos;
 
-  constructor(private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer, private route: ActivatedRoute){
+  user: Usuario = SesionComponent.user;
 
-      this.route.queryParams
-      .subscribe(params => {
+  constructor(private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer, private route: ActivatedRoute, 
+    private usuarioService: UsuariosService){
+
+    var id = localStorage.getItem('usuarioId');
+    if (id) {
+      this.usuarioService.getUsuariosById(+id).subscribe(d=> {
+        this.user = d;
+      });
+    }
+
+      this.route.queryParams.subscribe(params => {
         
         if (params['especialidadId'] != null){
 
           if (this.especialidad.filter( o => o.id == params['especialidadId']) != null) {
             this.especialidadSelected = this.especialidad.filter( o => o.id == params['especialidadId'])[0];
           }
+          
+        }
+
+        for (let i = 0; i < this.options.length; i++) {
+          const m = this.options[i];
+          m.especialidad = this.especialidad.filter( e => e.id == m.especialidadId)[0].name;
+          m.nombreEspecilidad = m.name + " - " + m.especialidad;
+          this.options[i] = m;
           
         }
 
@@ -130,11 +151,10 @@ export class MedicosEspecialidadComponent implements OnInit{
     const filterValue = value.toLowerCase();
 
     this.optionsFiltered = this.converTwoDimensions(this.optionsFiltered, 
-      this.options.filter(option => option.name.toLowerCase().includes(filterValue)));
+      this.options.filter(option => option.nombreEspecilidad.toLowerCase().includes(filterValue)));
       
-    return this.options
-    .filter(option => option.name.toLowerCase().includes(filterValue))
-    .map(o => o.name);
+    return this.options.filter(option => option.nombreEspecilidad.toLowerCase().includes(filterValue))
+      .map(o => o.nombreEspecilidad);
 
   }
 
@@ -143,8 +163,10 @@ export class MedicosEspecialidadComponent implements OnInit{
 interface Medico {
 
   name: string;
+  nombreEspecilidad: string;
   medicoId: number;
   especialidadId: number;
+  especialidad: string;
   sedeId: number[];
 
 }

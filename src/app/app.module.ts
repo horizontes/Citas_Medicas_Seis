@@ -21,6 +21,11 @@ import { SidenavContentAreaDirective } from './components/sidenav/sidenav-conten
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatRippleModule } from '@angular/material/core';
+import {MatCardModule} from '@angular/material/card'; 
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatTableModule} from '@angular/material/table';
+import {CdkTableModule} from '@angular/cdk/table';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -38,7 +43,8 @@ import { MatRippleModule } from '@angular/material/core';
     SettingsSidenavComponent,
   ],
   imports: [BrowserModule, RouterModule, AppRoutingModule, MatIconModule, MatToolbarModule, 
-    HttpClientModule, BrowserAnimationsModule, MatRippleModule],
+    HttpClientModule, BrowserAnimationsModule, MatRippleModule, MatCardModule, MatFormFieldModule,
+    MatTableModule, CdkTableModule, MatCheckboxModule],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -2,20 +2,20 @@
 
   <mat-toolbar color="primary">
     <mat-toolbar-row style="align-items: self-end;">
-      <h2>Hola Aurora,<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
+      <h2>Hola {{user ? user.nombres : "Invitado"}},<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
     </mat-toolbar-row>
   </mat-toolbar>
 </p>
 <mat-toolbar style="background-color: white;">
   <mat-toolbar-row>
-    <h4>Estos son los medicos de la Especialidad: <span style="text-decoration: underline;">{{especialidadSelected.name}}</span>
-      o puedes volver a selecionar otra <a routerLink="/especialidad">Especialidad</a></h4>
+    <h4>Estos son nuestros medicos elige uno
+      o puedes volver a <a routerLink="/nueva-cita">Nueva cita</a></h4>
   </mat-toolbar-row>
   <mat-toolbar-row style="background-color: white;">
     <mat-form-field class="example-full-width" style="width: 50%;">
-      <mat-label>Medicos de {{especialidadSelected.name}}</mat-label>
+      <mat-label>Nuestro staff de medicos</mat-label>
       <input type="text"
-             placeholder="Selecciona uno"
+             placeholder="Filtra por nombre o especialidad"
              aria-label="Number"
              matInput
              [formControl]="myControl"
@@ -36,11 +36,12 @@
         <table >
           <tr *ngFor="let options of optionsFiltered; index as i">
             <td *ngFor="let option of options; index as i">
-              <mat-card matRipple routerLink="/crearCita" [queryParams]="{medicoId: option.medicoId}"
-              queryParamsHandling="merge" style="border: 2px solid rgb(71, 163, 106); width: 350px;">
+              <mat-card matRipple routerLink="/crear-cita" 
+              [queryParams]="{medicoId: option.medicoId, especialidadId: option.especialidadId}"
+              queryParamsHandling="merge" style="border: 2px solid rgb(71, 163, 106); width: 400px;">
                 <mat-card-content> 
                   <mat-icon svgIcon="user-med" style="vertical-align: middle;"></mat-icon>
-                  <span>{{option.name}}</span>
+                  <span>{{option.nombreEspecilidad}}</span>
                 </mat-card-content>
               </mat-card>
             </td>

@@ -1,0 +1,37 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar.mat-primary {
+  background-color: rgba(240, 209, 115);
+  background-image: url('../../../assets/img/toolbar_plants.png');
+  height: 20vh;
+  display: flex;
+  align-items: self-end;
+  justify-content: center;
+  color: #302b2b;
+}
+
+.content-main {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+
+}
+
+a{
+  text-decoration: none;
+}
+
+.content > mat-card {
+  width: 400px;
+}
+
+.example-container {
+  width: 800px;
+  height: 500px;
+  margin: 10px;
+  border: 1px solid #555;
+}

@@ -2,7 +2,7 @@
 
   <mat-toolbar color="primary">
     <mat-toolbar-row style="align-items: self-end;">
-      <h2>Hola Aurora,<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
+      <h2>Hola {{user ? user.nombres : "Invitado"}},<br/><span style="font-size: 16px; font-style: italic;">Hagamos una nueva cita</span></h2>
     </mat-toolbar-row>
   </mat-toolbar>
 </p>

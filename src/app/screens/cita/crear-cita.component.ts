@@ -12,7 +12,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
-import {MatRippleModule} from '@angular/material/core';
+import { MatRippleModule } from '@angular/material/core';
 
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {MatButtonModule} from '@angular/material/button';
@@ -31,8 +31,14 @@ import Medicos from '../../../assets/data/medicos.json';
 import Sedes from '../../../assets/data/sedes.json';
 
 import * as _moment from 'moment';
-import { Cita } from 'src/app/citas.model';
+import { Cita } from 'src/app/models/citas.model';
 import { CitasService } from 'src/app/services/citas.services';
+import { DataService } from 'src/app/services/data.service';
+import { SesionComponent } from 'src/app/services/login/sesion.component';
+import { Usuario } from 'src/app/models/usuario.model';
+import { UsuariosService } from 'src/app/services/usuario.services';
+
+import {DataSource} from '@angular/cdk/collections';
 
 
 @Component({
@@ -122,12 +128,27 @@ export class CrearCitaComponent implements OnInit{
 
   citas: Cita[] = [];
 
+  user: Usuario = SesionComponent.user;
+
+  
+
   constructor(private _formBuilder: FormBuilder, private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer, private route: ActivatedRoute, 
-    private dateAdapter: DateAdapter<Date>, private service: CitasService){
+    private dateAdapter: DateAdapter<Date>, private service: CitasService, 
+    private dataService: DataService, private usuarioService: UsuariosService){
 
       this.dateAdapter.setLocale('es-US');
       
+      this.dataService.data$.subscribe(data => {
+        this.user = data;
+      });
+
+      var id = localStorage.getItem('usuarioId');
+      if (id) {
+        this.usuarioService.getUsuariosById(+id).subscribe(d=> {
+          this.user = d;
+        });
+      }
       
       service.getCitasList().subscribe(data => {
         this.citas = data;
@@ -150,6 +171,13 @@ export class CrearCitaComponent implements OnInit{
           this.medicos = this.medicos.filter(m => m.especialidadId == this.especialidadSelected.id);
           this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, this.medicos);
           
+        }
+
+        if (params['medicoId'] != null){
+
+          this.medicos = this.medicos.filter(m => m.medicoId == params['medicoId']);
+          this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, this.medicos);
+
         }
         
       }
@@ -308,16 +336,15 @@ export class CrearCitaComponent implements OnInit{
 
   agregarCita(){
 
-    console.log(1);
-
     const c: Cita = 
     { 
       medicoId: this.medicoSelected.medicoId,
-      pacienteId: 1,
+      pacienteId: this.user.usuarioId,
       fecha: this.fechaStringSelected ? this.fechaStringSelected: "",
       hora: this.horaStringSelected,
       duracion: 1,
-      total: 0
+      sede: this.sedeSelected.id,
+      citaId: 0
     };
 
     this.service.createCitas(c).subscribe({

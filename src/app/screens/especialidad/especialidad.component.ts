@@ -14,6 +14,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import {MatRippleModule} from '@angular/material/core';
 import Especialidades from '../../../assets/data/especialidades.json';
+import { DataService } from 'src/app/services/data.service';
+import { Usuario } from 'src/app/models/usuario.model';
+import { SesionComponent } from 'src/app/services/login/sesion.component';
+import { UsuariosService } from 'src/app/services/usuario.services';
 
 
 @Component({
@@ -40,8 +44,17 @@ import Especialidades from '../../../assets/data/especialidades.json';
 
 export class EspecialidadComponent implements OnInit{
 
+  user: Usuario = SesionComponent.user;
+
   constructor(private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer){
+    private domSanitizer: DomSanitizer, private usuarioService: UsuariosService){
+
+      var id = localStorage.getItem('usuarioId');
+    if (id) {
+      this.usuarioService.getUsuariosById(+id).subscribe(d=> {
+        this.user = d;
+      });
+    }
 
       this.matIconRegistry.addSvgIcon(
         'calendar_add_on',
