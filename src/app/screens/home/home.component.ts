@@ -8,13 +8,12 @@ import { DataService } from 'src/app/services/data.service';
 import { SesionComponent } from 'src/app/services/login/sesion.component';
 import { UsuariosService } from 'src/app/services/usuario.services';
 
-import {BehaviorSubject, Observable} from 'rxjs';
-
 import Especialidades from '../../../assets/data/especialidades.json';
 import Medicos from '../../../assets/data/medicos.json';
 import Sedes from '../../../assets/data/sedes.json';
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
+import { DatePipe } from '@angular/common';
 
 const citasView: CitaView[] = [];
 
@@ -30,6 +29,8 @@ export class HomeComponent {
   es: Especialidad[] = Especialidades;
   md: Medico[] = Medicos;
   sd: Sede[] = Sedes;
+
+  datePipe: DatePipe = new DatePipe("en-US");
 
   dataSource: MatTableDataSource<CitaView>;
   selection = new SelectionModel<CitaView>(true, []);
@@ -66,28 +67,34 @@ export class HomeComponent {
               this.error = "Todavia no tienes citas programadas.";
             }
 
-            this.citas.forEach(c => {
+            if (this.citas) {
+
+              console.log(this.citas);
+
+              this.citas.forEach(c => {
       
-              var m = this.md.filter(m => c.medicoId == m.medicoId)[0];
-              var s = this.sd.filter(s => s.id == (c.sede && c.sede != 0 ? c.sede : m.sede))[0];
-              
-              citasView.push(
-                {
-                pacienteId: c.pacienteId,
-                nombre: this.user.nombres + " " + this.user.apellidos,
-                fecha: c.fecha,
-                hora: c.hora,
-                lugar: s.name + " - " + s.address,
-                medico: m.name,
-                direccion: s.address.replaceAll(' ', '+').replaceAll('.',''),
-                citaId: c.citaId
+                var m = this.md.filter(m => c.medico.medicoId == m.medicoId)[0];
+                var s = this.sd.filter(s => s.id == (c.sede && c.sede.sedeId != 0 ? c.sede : m.sede))[0];
+                
+                citasView.push(
+                  {
+                  pacienteId: c.usuario.usuarioId,
+                  nombre: this.user.nombres + " " + this.user.apellidos,
+                  fecha: this.transformDate(c.fecha),
+                  hora: c.hora,
+                  lugar: s.name + " - " + s.address,
+                  medico: m.name,
+                  direccion: s.address.replaceAll(' ', '+').replaceAll('.',''),
+                  citaId: c.citaId
+                });
+  
+                this.dataSource = new MatTableDataSource<CitaView>(citasView);
+  
+                this.error = "";
+          
               });
 
-              this.dataSource = new MatTableDataSource<CitaView>(citasView);
-
-              this.error = "";
-        
-            });
+            }
 
           }
         );
@@ -132,6 +139,16 @@ export class HomeComponent {
         window.location.reload();
       });
     });
+  }
+
+  private transformDate(d : Date){
+    return this.datePipe.transform(d, "dd/MM/yyyy");
+  }
+
+
+  private stringToDate(s: string | null){
+    var ss = s ? s.split("/") : "";
+    return new Date(ss[2] + "-" + ss[1] + "-" + ss[0]);
   }
 
 }

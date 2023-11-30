@@ -5,8 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { NgFor, NgIf, AsyncPipe, NgStyle, DatePipe } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
@@ -26,7 +24,6 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 
 //import data
-import Especialidades from '../../../assets/data/especialidades.json';
 import Medicos from '../../../assets/data/medicos.json';
 import Sedes from '../../../assets/data/sedes.json';
 
@@ -37,8 +34,12 @@ import { DataService } from 'src/app/services/data.service';
 import { SesionComponent } from 'src/app/services/login/sesion.component';
 import { Usuario } from 'src/app/models/usuario.model';
 import { UsuariosService } from 'src/app/services/usuario.services';
-
-import {DataSource} from '@angular/cdk/collections';
+//import { Medico } from 'src/app/models/medico.model';
+import { Especialidad } from 'src/app/models/especialidad.model';
+import { EspecialidadService } from 'src/app/services/especialidad.services';
+import { Sede } from 'src/app/models/sede.model';
+import { MedicoService } from 'src/app/services/medico.services';
+import { Medico } from 'src/app/models/medico.model';
 
 
 @Component({
@@ -115,27 +116,27 @@ export class CrearCitaComponent implements OnInit{
   horaSelected: number = 0;
   horaStringSelected: string = '';
 
-  especialidades: Especialidad[] = Especialidades;
-  especialidadSelected : Especialidad = { name:"", id:0 };
+  //especialidades: Especialidad[] = Especialidades;
+  especialidadSelected : Especialidad = { nombre: "", especialidadId: 0 };
 
   medicos: Medico[] = Medicos;
   optionsMedicos: Array<Medico[]> = [];
-  medicoSelected : Medico = { name:"", medicoId:0, especialidadId:0, sedeId: [], colaPacientes: 0, 
+  medicoSelected : MedicoView = { name:"", medicoId:0, especialidadId:0, sedeId: [], colaPacientes: 0, 
     citas:[], horasLibres:[] };
 
-  sedes: Sede[] = Sedes;
-  sedeSelected: Sede = { name: "", id: 0,  district: "", address: "", reference: "" };
+  sedes: Sede[] = [];
+  sedeSelected: Sede = { nombre: "", sedeId: 0,  distrito: "", direccion: "", referencia: "" };
 
   citas: Cita[] = [];
 
   user: Usuario = SesionComponent.user;
 
-  
-
   constructor(private _formBuilder: FormBuilder, private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer, private route: ActivatedRoute, 
     private dateAdapter: DateAdapter<Date>, private service: CitasService, 
-    private dataService: DataService, private usuarioService: UsuariosService){
+    private dataService: DataService, private usuarioService: UsuariosService,
+    private especialidadesService: EspecialidadService,
+    private medicoService: MedicoService){
 
       this.dateAdapter.setLocale('es-US');
       
@@ -149,29 +150,30 @@ export class CrearCitaComponent implements OnInit{
           this.user = d;
         });
       }
-      
+      /**
       service.getCitasList().subscribe(data => {
         this.citas = data;
-      });
+      }); */
 
       this.route.queryParams
       .subscribe(params => {
         
         if (params['especialidadId'] != null){
 
-          if (this.especialidades.filter( o => o.id == params['especialidadId']) != null) {
-            this.especialidadSelected = this.especialidades
-              .filter( o => o.id == params['especialidadId'])[0];
-          }
-          
+          this.especialidadesService.getItemById(params['especialidadId'])
+          .subscribe(d => {
+            this.especialidadSelected = d;
+            this.sedes = this.especialidadSelected.sedes? this.especialidadSelected.sedes : [];
+          })
+         
         }
+        /** 
+        if (this.especialidadSelected.especialidadId != 0){
 
-        if (this.especialidadSelected.id != 0){
-
-          this.medicos = this.medicos.filter(m => m.especialidadId == this.especialidadSelected.id);
+          this.medicos = this.medicos.filter(m => m.especialidadId == this.especialidadSelected.especialidadId);
           this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, this.medicos);
           
-        }
+        }**/
 
         if (params['medicoId'] != null){
 
@@ -219,17 +221,17 @@ export class CrearCitaComponent implements OnInit{
 
     const id: number = e.value;
 
-    if (this.sedes.filter( s => s.id == id)[0] != null){
+    if (this.sedes.filter( s => s.sedeId == id)[0] != null){
 
-      this.sedeSelected = this.sedes.filter( s => s.id == id)[0];
-      
+      this.sedeSelected = this.sedes.filter( s => s.sedeId == id)[0];
+      /** 
       this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, 
                             this.medicos.filter(
-                              m => m.sedeId.includes(this.sedeSelected.id)));
-
+                              m => m.sedeId.includes(this.sedeSelected.sedeId)));
+*/
     } else {
 
-      this.sedeSelected = { name: "", id: 0,  district: "", address: "", reference: "" };
+      this.sedeSelected = { nombre: "", sedeId: 0,  distrito: "", direccion: "", referencia: "" };
 
     }
     
@@ -241,35 +243,23 @@ export class CrearCitaComponent implements OnInit{
 
       this.date2 = new FormControl(_moment(e.value));
       this.fechaStringSelected = this.transformDate(e.value);
-      this.obtenerCitas(this.fechaStringSelected);
-      console.log(this.date2.value?.toDate());
+
+      this.medicoService.getMedicosList(this.transformDateSQL(e.value), 
+        this.especialidadSelected.especialidadId, this.sedeSelected.sedeId)
+        .subscribe(d => {
+          this.medicos = d;
+          this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, 
+            this.medicos);
+        })
+      
+      /**this.optionsMedicos = this.converTwoDimensions(this.optionsMedicos, 
+            this.medicos.filter(
+            m => m.sedeId.includes(this.sedeSelected.sedeId)));**/
+
+      console.log(this.medicos);
 
     }
     
-  }
-
-  obtenerCitas(f: string | null){
-
-    if (this.medicos != null){
-      for (let i = 0; i < this.medicos.length; i++) {
-        if (this.medicos[i] != null){
-          const m = this.medicos[i];
-          m.colaPacientes = 0;
-          
-          for (let i = 0; i < this.citas.length; i++) {
-            const c = this.citas[i];
-            if (m.citas == null) {
-              m.citas = [];
-            }
-            if (c.medicoId == m.medicoId && this.fechaStringSelected == c.fecha){
-              m.citas.push(c);
-              m.colaPacientes = +c.duracion;
-            }
-          }
-          this.medicos[i] = m;
-        }        
-      }
-    }
   }
 
   obtenerMedico(e: any){
@@ -282,7 +272,7 @@ export class CrearCitaComponent implements OnInit{
 
   }
 
-  obtenerHorasLibres(m : Medico){
+  obtenerHorasLibres(m : MedicoView){
 
     if (m != null){
       const hf: number[] = [];
@@ -335,15 +325,17 @@ export class CrearCitaComponent implements OnInit{
   }
 
   agregarCita(){
-
+    var s = new Sede;
+    s.sedeId = this.sedeSelected.sedeId
     const c: Cita = 
     { 
-      medicoId: this.medicoSelected.medicoId,
-      pacienteId: this.user.usuarioId,
-      fecha: this.fechaStringSelected ? this.fechaStringSelected: "",
+      medico: this.viewToMedico(this.medicoSelected),
+      usuario: this.user,
+      fecha: this.stringToDate(this.fechaStringSelected),
+      especialidad: this.especialidadSelected,
       hora: this.horaStringSelected,
       duracion: 1,
-      sede: this.sedeSelected.id,
+      sede: this.sedeSelected,
       citaId: 0
     };
 
@@ -360,9 +352,9 @@ export class CrearCitaComponent implements OnInit{
     this.medicoSelected = { name:"", medicoId:0, especialidadId:0, sedeId: [], colaPacientes: 0, 
     citas:[], horasLibres:[] };
  
-    this.especialidadSelected = { name:"", id:0 };
+    this.especialidadSelected = { nombre:"", especialidadId:0 };
  
-    this.sedeSelected = { name: "", id: 0,  district: "", address: "", reference: "" };
+    this.sedeSelected = { nombre: "", sedeId: 0,  distrito: "", direccion: "", referencia: "" };
 
     this.horaSelected = 0;
     this.horaStringSelected = '';
@@ -388,14 +380,30 @@ export class CrearCitaComponent implements OnInit{
   }
 
   private transformDate(d : Date){
-
     return this.datePipe.transform(d, "dd/MM/yyyy");
+  }
 
+  private transformDateSQL(d : Date){
+    return this.datePipe.transform(d, "yyyy-MM-dd");
+  }
+
+  private stringToDate(s: string | null){
+    var ss = s ? s.split("/") : "";
+    return new Date(ss[2] + "-" + ss[1] + "-" + ss[0]);
+  }
+
+  private viewToMedico(mv: MedicoView){
+      var m = new Medico;
+      m.medicoId = mv.medicoId;
+      m.nombreCompleto = mv.name;
+      m.correo = "";
+      m.clave = "";
+      return m;
   }
 
 }
 
-interface Medico {
+interface MedicoView {
 
   name: string;
   medicoId: number;
@@ -405,21 +413,6 @@ interface Medico {
   horasLibres: number[];
   citas: Cita[];
 
-}
-
-interface Sede{
-
-  name: string;
-  id: number;
-  district: string;
-  address: string;
-  reference: string;
-
-}
-
-interface Especialidad {
-  name: string;
-  id: number;
 }
 
 

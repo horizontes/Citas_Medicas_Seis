@@ -17,22 +17,22 @@
               <form [formGroup]="firstFormGroup">
                 <ng-template matStepLabel>Configura tu Cita</ng-template>
                 <p>&nbsp;</p>
-                <h4>La especialidad selecionada es: {{especialidadSelected.name}}</h4>
+                <h4>La especialidad selecionada es: {{especialidadSelected.nombre}}</h4>
                 <p>
                   <mat-form-field style="width: 400px;">
                     <mat-label>Seleciona una sede</mat-label>
                     <mat-select formControlName="firstCtrl" (selectionChange)="obtenerSede($event)" required>
-                      <mat-option  *ngFor="let sede of sedes" value="{{sede.id}}">
-                        {{sede.name}}
+                      <mat-option  *ngFor="let sede of sedes" value="{{sede.sedeId}}">
+                        {{sede.nombre}}
                       </mat-option>
                     </mat-select>
-                    <mat-hint align="end">{{sedeSelected.reference}}</mat-hint>
+                    <mat-hint align="end">{{sedeSelected.referencia}}</mat-hint>
                   </mat-form-field>
                 </p>
                 <p>
                   <mat-form-field style="width: 400px;">
                     <mat-label>Seleciona una fecha</mat-label>
-                    <input matInput formControlName="firstCtrl" [matDatepicker]="datepicker" [disabled]="sedeSelected.id == 0" 
+                    <input matInput formControlName="firstCtrl" [matDatepicker]="datepicker" [disabled]="sedeSelected.sedeId == 0" 
                     (dateChange)="obtenerFecha($event)" required>
                       <mat-hint align="end">dd/mm/yyyy</mat-hint>
                       <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
@@ -51,7 +51,7 @@
                           <mat-chip-option [value]="option" aria-label="medicoSelected" *ngFor="let option of options;" style="width: 350px;"
                           [style]="{'border': option.colaPacientes == 9 ? '2px solid rgb(146, 43, 43)' : '2px solid rgb(71, 163, 106)', 
                           'pointer-events': fechaStringSelected == '' || option.colaPacientes == 9 ? 'none' : 'auto' }">
-                            <mat-icon svgIcon="user-med"></mat-icon> {{option.name}}{{option.colaPacientes != null ? " - Cola:" + option.colaPacientes : ""}}
+                            <mat-icon svgIcon="user-med"></mat-icon> {{option.nombreCompleto}}{{option.colaPacientes != null ? " - Cola:" + option.colaPacientes : ""}}
                           </mat-chip-option>
                       </td>
                     </tr>
@@ -72,7 +72,7 @@
                 <p>
                   <mat-form-field style="width: 400px;">
                     <mat-label>Seleciona una fecha</mat-label>
-                    <input matInput formControlName="secondCtrl" [matDatepicker]="datepicker2" [disabled]="sedeSelected.id == 0" 
+                    <input matInput formControlName="secondCtrl" [matDatepicker]="datepicker2" [disabled]="sedeSelected.sedeId == 0" 
                     (dateChange)="obtenerFecha($event)" [formControl]="date2" required>
                       <mat-hint align="end">dd/mm/yyyy</mat-hint>
                       <mat-datepicker-toggle matIconSuffix [for]="datepicker2"></mat-datepicker-toggle>
@@ -158,7 +158,7 @@
                 <span style="color: rgb(109, 55, 146);">Especialidad</span>
               </p>
               <p>
-                {{especialidadSelected.name}}
+                {{especialidadSelected.nombre}}
               </p>
               <p>
                 <span style="color: rgb(109, 55, 146);">Medico</span>

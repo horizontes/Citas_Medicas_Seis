@@ -22,7 +22,7 @@ export class UsuariosService {
   }
 
   getValidarUsuario(c: string, p : string): Observable<Usuario> {
-    return this.httpClient.post<Usuario>(`http://localhost:8080/api/validarUsuario`, 
+    return this.httpClient.post<Usuario>(`http://localhost:8080/api/usuarios/validarUsuario`, 
     {
       'correo': c, 'clave': p
     });

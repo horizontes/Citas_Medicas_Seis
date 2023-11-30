@@ -35,11 +35,11 @@
         <table >
           <tr *ngFor="let options of optionsFiltered; index as i">
             <td *ngFor="let option of options; index as i">
-              <mat-card matRipple routerLink="/crear-cita" [queryParams]="{especialidadId: option.id}"
+              <mat-card matRipple routerLink="/crear-cita" [queryParams]="{especialidadId: option.especialidadId}"
               queryParamsHandling="merge" style="border: 2px solid rgb(91, 176, 209);">
                 <mat-card-content> 
                   <mat-icon svgIcon="plus-circle" style="vertical-align: middle;"></mat-icon>
-                  <span>{{option.name}}</span>
+                  <span>{{option.nombre}}</span>
                 </mat-card-content>
               </mat-card>
             </td>

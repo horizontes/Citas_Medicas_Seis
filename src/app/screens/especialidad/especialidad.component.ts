@@ -13,11 +13,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import {MatRippleModule} from '@angular/material/core';
-import Especialidades from '../../../assets/data/especialidades.json';
-import { DataService } from 'src/app/services/data.service';
 import { Usuario } from 'src/app/models/usuario.model';
 import { SesionComponent } from 'src/app/services/login/sesion.component';
 import { UsuariosService } from 'src/app/services/usuario.services';
+import { EspecialidadService } from 'src/app/services/especialidad.services';
+import { Especialidad } from 'src/app/models/especialidad.model';
 
 
 @Component({
@@ -47,16 +47,35 @@ export class EspecialidadComponent implements OnInit{
   user: Usuario = SesionComponent.user;
 
   constructor(private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer, private usuarioService: UsuariosService){
+    private domSanitizer: DomSanitizer, private usuarioService: UsuariosService,
+    private especialidadesService: EspecialidadService){
 
       var id = localStorage.getItem('usuarioId');
-    if (id) {
-      this.usuarioService.getUsuariosById(+id).subscribe(d=> {
-        this.user = d;
-      });
-    }
 
-      this.matIconRegistry.addSvgIcon(
+      if (id) {
+        this.usuarioService.getUsuariosById(+id).subscribe(d=> {
+          this.user = d;
+        });
+      }
+
+      this.options = [];
+
+      this.especialidadesService.getItemList().subscribe(
+        d=>  {
+          
+          this.options = d; 
+          
+          this.filteredOptions = this.myControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value || '')),
+          );
+      
+          this.optionsFiltered = this.converTwoDimensions(this.optionsFiltered, this.options);
+        
+        }
+      );
+
+        this.matIconRegistry.addSvgIcon(
         'calendar_add_on',
         this.domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/svg/calendar_add_on.svg')
       );
@@ -79,21 +98,13 @@ export class EspecialidadComponent implements OnInit{
   }
 
   myControl = new FormControl('');
-  
-  options: Especialidad[] = Especialidades;
-  
+  options: Especialidad[];
+    
   filteredOptions: Observable<string[]> = new Observable;
   optionsFiltered: Array<any> = [];
   
 
   ngOnInit() {
-
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
-
-    this.optionsFiltered = this.converTwoDimensions(this.optionsFiltered, this.options);
 
   }
 
@@ -120,18 +131,12 @@ export class EspecialidadComponent implements OnInit{
     const filterValue = value.toLowerCase();
 
     this.optionsFiltered = this.converTwoDimensions(this.optionsFiltered, 
-      this.options.filter(option => option.name.toLowerCase().includes(filterValue)));
+      this.options.filter(option => option.nombre.toLowerCase().includes(filterValue)));
       
     return this.options
-    .filter(option => option.name.toLowerCase().includes(filterValue))
-    .map(o => o.name);
+      .filter(option => option.nombre.toLowerCase().includes(filterValue))
+      .map(o => o.nombre);
 
   }
 
 }
-
-interface Especialidad {
-  name: string;
-  id: number;
-};
-

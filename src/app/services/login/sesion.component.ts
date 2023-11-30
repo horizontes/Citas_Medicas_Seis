@@ -3,7 +3,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule, AbstractControl, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import {NgIf} from '@angular/common';
 import { UsuariosService } from '../usuario.services';
@@ -52,15 +52,24 @@ export class SesionComponent {
 
   validarLogin(e: any){
 
+    if (!this.emailFormControl.value || !this.claveFormControl.value){
+      this.error = "Complete los campos requeridos";
+      return
+    }
+
     this.service.getValidarUsuario(this.emailFormControl.value ? this.emailFormControl.value : '', 
     this.claveFormControl.value ? this.claveFormControl.value : '')
       .subscribe(d => {
         console.log(d);
         if (d != null){
-          this.dataService.sendData(d);
-          this.error="";
-          this.router.navigate(['/home']);
-          localStorage.setItem('usuarioId', '' + d.usuarioId);
+          if (d.estado && d.estado == 4){
+            this.error = "El usuario se encuentra bloqueado, por favor informe a soporte técnico.";
+          } else {
+            this.dataService.sendData(d);
+            this.error="";
+            this.router.navigate(['/home']);
+            localStorage.setItem('usuarioId', '' + d.usuarioId);
+          }
         } else {
           this.error = "Usuario o clave no valido.";
         }

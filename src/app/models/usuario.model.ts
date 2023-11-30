@@ -5,7 +5,10 @@ export class Usuario {
     apellidos!: string;
     clave!: string;
     correo!: string;
-    creacion!: string;
-    ultimoIngreso?: string;
+    intentos?:number;
+
+    creacion?: Date;
+    actualizacion?: Date;
+    estado?: number;
 
 }
